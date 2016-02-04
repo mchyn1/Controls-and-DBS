@@ -1,7 +1,7 @@
 %Code to find the best controller K
 %PI: Sridevi Sarma
 %Pseudocode: Michelle Chyn
-%TF/Edits: Melissa Lin
+%TF/Edits: Melissa Lin, Debra Huang
 
 %Load global variables
 global lags psth counter
@@ -18,24 +18,32 @@ num = [A -A*gamma*cos(w) 0];
 Ts  = 0.1;
 
 %finding controller K
-maxerr=zeros(21,1);
+maxerr=zeros(1,1);
 
-for K = -10:10 %can change to first order etc.
-    H_n = %Use Sabatino code to find; %normal
-    H_p=; %Use Sabatine code to find; %Parkinsonian
-    H_control = %Create based on %H_p/(1+H_p*K)
-    
-    [mag,~] = bode(H_control,z);
-    [mag_p,~] = bode(H_p,z);
-    [mag_n,~] = bode(H_n,z);
+for j = 1:21 %can change to first order etc.
+    K = j -11;
+    H_n = tf(num,den,Ts,'variable','z^-1','InputDelay',d);
+    H_p = tf(num,den,Ts,'variable','z^-1','InputDelay',d); %Use Sabatine code to find; %Parkinsonian
+    H_control = tf(num,(den+num*K),Ts,'variable','z^-1','InputDelay',d);%Create based on %H_p/(1+H_p*K)
+    mag = zeros(1,360);
+    mag_p = zeros(1,360);
+    mag_n = zeros(1,360);
+    for q=1:361
+    [mag(q),~] = bode(H_control,(q-1)/180*pi);
+    [mag_p(q),~] = bode(H_p,(q-1)/180*pi);
+    [mag_n(q),~] = bode(H_n,(q-1)/180*pi);
     %zplane(num,den);
-    for z =  0:.1:2*pi
-        if abs(mag_n-mag) > maxerr(k)
-            maxerr(K) = abs(mag_n-mag);
-        end
+    
+        
+    end
+    for q=1:361
+        [maxerr(j) index] = max(abs(mag_n(q)-mag(q)));
     end
 end
-[y,i] = min(maxxerr);
+[y,i] = min(maxerr);
 K = -10:10;
 K=K(i);
+H_control = tf(num,(den+num*K),Ts,'variable','z^-1','InputDelay',d);
 bodeplot(H_n,'b',H_control,'r');
+
+
