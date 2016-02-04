@@ -4,14 +4,14 @@ maxerr=zeros(21,1);
 for K = -10:10 %can change to first order etc.
     H_n=; %normal
     H_p=; %Parkinsonian
-    H=tf(H_p,[  %H_p/(1+H_p*K)
-    [mag,~] = bode(H,z);
+    H_k=; %controlled system
+    H=tf(num,[
     [mag_p,~] = bode(H_p,z);
-    [mag_n,~] = bode(H_n,z);
-    %zplane(num,den);
+    [mag_k,~] = bode(H_k,z);
+    zplane(num,den);
     for z =  0:.1:2*pi
-        if abs(mag_n-mag) > maxerr(k)
-            maxerr(K) = abs(mag_n-mag);
+        if abs(mag_k-mag_p) > maxerr(k)
+            maxerr(K) = abs(mag_k-mag_p);
         end
     end
 end
