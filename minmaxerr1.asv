@@ -34,20 +34,21 @@ Ts  = 0.1;
 maxerr=zeros(1,1);
 
 for j = 1:21 %can change to first order etc.
-    K = (j-11)/10;
+    K = (j-11)/;
     H_n = tf(num,den,Ts,'variable','z^-1','InputDelay',d_normal);
     H_p = tf(num1,den1,Ts,'variable','z^-1','InputDelay',d_pd); %Use Sabatino code to find; %Parkinsonian
     H_control = tf(num1,(den1+num1*K),Ts,'variable','z^-1','InputDelay',d_normal);
     mag = zeros(1,360);
     mag_p = zeros(1,360);
     mag_n = zeros(1,360);
-    w=360*10:360*30;
-        [mag,~] = bode(H_control,w);
-        [mag_p,~] = bode(H_p,w);
-        [mag_n,~] = bode(H_n,w);
+    for q=1:361
+        [mag(q),~] = bode(H_control,(q-1)/180*pi);
+        [mag_p(q),~] = bode(H_p,(q-1)/180*pi);
+        [mag_n(q),~] = bode(H_n,(q-1)/180*pi);
         %zplane(num,den);
         
-        %disp('Running');
+        disp('Running');
+    end
     poles=pole(H_control);
     r=length(poles);
     count=0;
@@ -58,7 +59,7 @@ for j = 1:21 %can change to first order etc.
     end
     if count==0
         error = zeros(360,1);
-        for q=1:360*20
+        for q=1:361
             error(q) = abs(mag_n(q)-mag(q));
         end
         [maxerr(j), index] = max(error);
@@ -66,9 +67,9 @@ for j = 1:21 %can change to first order etc.
 end
 
 [y,i] = min(maxerr);
-K = -1:2/21:1;
+K = -10:10;
 K=K(i);
 H_control = tf(num1,(den1+num1*K),Ts,'variable','z^-1','InputDelay',d_normal);
-bodeplot(H_n,'b',H_control,'m',H_p, 'r');
+bodeplot(H_control,'r',H_p, 'k');
 
 
