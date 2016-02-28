@@ -1,3 +1,24 @@
+%Set up parameters based on the 'best' values found in earlier trials
+A_normal = 4.6560;
+gamma_normal = 0.9544;
+w_normal = 6.3461;
+d_normal = 6;
+
+A_pd = 4.232389;
+gamma_pd = 0.9497;
+w_pd = 0.0631;
+d_pd = 6;
+
+%Set up unmodified transfer functions based on Sabatino's code
+den = [1 -2*gamma_normal*cos(w_normal) gamma_normal^2];
+num = [A_normal -A_normal*gamma_normal*cos(w_normal) 0];
+den1 = [1 -2*gamma_pd*cos(w_pd) gamma_pd^2];
+num1 = [A_pd -A_pd*gamma_pd*cos(w_pd) 0];
+Ts  = 0.0001;
+
+maxerr=zeros(21,21);
+
+%plotting bode's with different K's
 for j = 1
     for i = 1:3
         n=1;
