@@ -1,8 +1,8 @@
-for j = 1:6
-    for i = 1:6
+for j = 1:2
+    for i = 1:3
         n=1;
-        A_K=j-6;
-        B_K=i-41;
+        A_K=j-1;
+        B_K=-i-35;
         num_c= [A_pd A_pd.*B_K-A_pd.*gamma_pd.*cos(w_pd) -A_pd.*gamma_pd.*B_K.*cos(w_pd) 0];
         den_c= [1 A_pd.*A_K+B_K-2.*gamma_pd.*cos(w_pd) gamma_pd.^2-A_pd.*A_K.*gamma_pd.*cos(w_pd)-2.*B_K.*gamma_pd.*cos(w_pd) B_K.*gamma_pd.^2];
         H_control = tf(num_c, den_c, Ts, 'variable','z^-1','InputDelay',d_normal);
