@@ -1,6 +1,6 @@
 function err = find_params(x01, x02)
 
-global lags psth err runs y
+global lags resp_pd err runs y
 
     % set the initial guess for the model parameters that you're looking for.
     % The routine will then refine the search. Let as assume for now that the
@@ -36,7 +36,7 @@ global lags psth err runs y
     Hsys = Hsys1+Hsys2;
     % compute the impulse response of the transfer function
     y = impulse(Hsys,lags);
-    [num{i,1}, den{i,1}]= tfdata(Hsys);
+    % [num{i,1}, den{i,1}]= tfdata(Hsys);
 
     % compute the error between the actual impulse response
-    err = norm(psth-y,2);
+    err = norm(resp_pd-y,2);
