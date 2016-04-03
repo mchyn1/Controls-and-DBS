@@ -2,13 +2,6 @@ function err = find_params(x01, x02)
 
 global lags psth err runs y
 
-runs = 15;
-y = zeros(runs,length(psth));
-err = zeros(1,runs);
-num = cell(15,1);
-den = cell(15,1);
-
-for i = 1:runs
     % set the initial guess for the model parameters that you're looking for.
     % The routine will then refine the search. Let as assume for now that the
     % parameters are x = [ A gamma w d]
@@ -42,19 +35,8 @@ for i = 1:runs
     % Hsys3 = tf(num3,den3,Ts,'variable','z^-1','InputDelay',d3);
     Hsys = Hsys1+Hsys2;
     % compute the impulse response of the transfer function
-    y(i,:) = impulse(Hsys,lags);
+    y = impulse(Hsys,lags);
     [num{i,1}, den{i,1}]= tfdata(Hsys);
 
     % compute the error between the actual impulse response
-    err(i) = norm(psth-y(i,:)',2);
-end
-
-[M,I] = min(err);
-% plot the results
-figure;
-plot(lags,psth,'k',lags,y(I,:),'r');
-figure;
-zplane(num{I,1}{1,1},den{I,1}{1,1});
-fprintf('MSE: %f\n',err(I));
-%fprintf('params: A= %f\t gamma= %f\t w= %f\t d= %f\n',x1);
-%fprintf('params: A= %f\t gamma= %f\t w= %f\t d= %f\n',x2);
+    err = norm(psth-y,2);
